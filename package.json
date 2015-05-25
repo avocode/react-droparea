@@ -1,0 +1,36 @@
+{
+  "name": "react-droparea",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.coffee",
+  "homepage": "https://github.com/avocode/react-droparea",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "demo": "webpack-dev-server --hot --progress --colors"
+  },
+  "keywords": [
+    "react",
+    "drag and drop",
+    "react-component",
+    "drag’n’drop"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/avocode/react-droparea.git"
+  },
+  "dependencies": {
+    "css-loader": "^0.14.2",
+    "dragster-avocode-fork": "^1.0.0",
+    "react": "^0.13.3",
+    "reactionary": "^0.9.0"
+  },
+  "author": "Petr Brzek",
+  "license": "MIT",
+  "devDependencies": {
+    "coffee-loader": "^0.7.2",
+    "coffee-script": "^1.9.2",
+    "node-libs-browser": "^0.5.2",
+    "webpack": "^1.9.9",
+    "webpack-dev-server": "^1.9.0"
+  }
+}
