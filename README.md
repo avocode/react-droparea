@@ -51,3 +51,8 @@ Then visit `localhost:8080/demo`.
     multiple: React.PropTypes.bool
     supportedFormats: React.PropTypes.arrayOf(React.PropTypes.string)
     beActiveWhenHoveringDescendant: React.PropTypes.bool
+
+## Credits
+
+This library is inspired by [react-dropzone](https://github.com/paramaggarwal/react-dropzone) by Param Aggarwal.
+
