@@ -2,12 +2,12 @@
   "name": "react-droparea",
   "version": "1.0.2",
   "description": "Drag and Drop library for React",
-  "main": "dist/main.js",
+  "main": "index.js",
   "homepage": "https://github.com/avocode/react-droparea",
   "scripts": {
     "start": "webpack-dev-server --hot --progress --colors --port 3000",
     "test": "./node_modules/.bin/istanbul cover test/config/index.js -x 'test/**'",
-    "prepublish": "./node_modules/.bin/coffee -o ./ lib/",
+    "prepublish": "./node_modules/.bin/coffee -o ./ index.coffee",
     "postpublish": "git clean -f -d",
     "postinstall": "git clean -f -d"
   },
