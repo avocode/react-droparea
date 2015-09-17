@@ -37,7 +37,7 @@
 
     React.render(React.createElement(App), document.getElementById('app'))
 
-This example is available in demo folder. Just clone this repo, `npm install` and `npm run demo`.
+This example is available in demo folder. Just clone this repo, `npm install` and `npm start`.
 Then visit `localhost:8080/demo`.
 
 ## Options - React props
