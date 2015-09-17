@@ -1,6 +1,6 @@
-window.React = require 'react'
-{div} = require 'reactionary'
-Dragarea = React.createFactory(require '../index')
+React = require 'react'
+{div} = React.DOM
+Dragarea = React.createFactory(require '../')
 
 App = React.createClass
 

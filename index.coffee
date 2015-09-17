@@ -1,8 +1,10 @@
 Dragster = require 'dragster-avocode-fork'
 React = require 'react'
-{div, input} = require 'reactionary'
+{div, input} = React.DOM
 
 Droparea = React.createClass
+
+  displayName: 'Droparea'
 
   propTypes:
     disableClick: React.PropTypes.bool
@@ -35,7 +37,7 @@ Droparea = React.createClass
     @_dragster = new Dragster(@_domElement)
     @_domElement.addEventListener 'drop', @_onDrop
     @_domElement.addEventListener 'dragover', @_onDragOver
-    @_domElement.addEventListener 'dropped', @_onDroppped
+    @_domElement.addEventListener 'dragarea:dropped', @_onDroppped
 
     if @props.beActiveWhenHoveringDescendant
       @_domElement.addEventListener 'dragster:leave', @_onDragLeave
@@ -47,7 +49,7 @@ Droparea = React.createClass
   componentWillUnmount: ->
     @_domElement.removeEventListener 'drop', @_onDrop
     @_domElement.removeEventListener 'dragover', @_onDragOver
-    @_domElement.removeEventListener 'dropped', @_onDroppped
+    @_domElement.removeEventListener 'dragarea:dropped', @_onDroppped
 
     if @props.beActiveWhenHoveringDescendant
       @_domElement.removeEventListener 'dragster:leave', @_onDragLeave
@@ -128,7 +130,7 @@ Droparea = React.createClass
       files = e.target.files
 
   dispatchDroppedEvent: ->
-    @_domElement.dispatchEvent new CustomEvent 'dropped',
+    @_domElement.dispatchEvent new CustomEvent 'dragarea:dropped',
       bubbles: true
       cancelable: true
 
@@ -141,7 +143,7 @@ Droparea = React.createClass
       onClick: @_onClick,
 
       input
-        style: {display: 'none'}
+        style: display: 'none'
         type: 'file'
         ref: 'fileInput'
         onChange: @_onDrop
