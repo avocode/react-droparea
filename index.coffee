@@ -2,6 +2,9 @@ Dragster = require 'dragster-avocode-fork'
 React = require 'react'
 {div, input} = React.DOM
 
+_enter = 0
+_leave = 0
+
 Droparea = React.createClass
 
   displayName: 'Droparea'
@@ -39,7 +42,7 @@ Droparea = React.createClass
     @_domElement.addEventListener 'drop', @_onDrop
     @_domElement.addEventListener 'dragover', @_onDragOver
     @_domElement.addEventListener 'dragarea:dropped', @_onDroppped
-    @_domElement.addEventListener 'dragarea:dragover', @_onChildDragOver
+    @_domElement.addEventListener 'dragarea:dragenter', @_onChildDragEnter
     @_domElement.addEventListener 'dragarea:dragleave', @_onChildDragLeave
     @_domElement.addEventListener 'dragster:leave', @_onDragLeave
     @_domElement.addEventListener 'dragster:enter', @_onDragEnter
@@ -48,7 +51,7 @@ Droparea = React.createClass
     @_domElement.removeEventListener 'drop', @_onDrop
     @_domElement.removeEventListener 'dragover', @_onDragOver
     @_domElement.removeEventListener 'dragarea:dropped', @_onDroppped
-    @_domElement.removeEventListener 'dragarea:dragover', @_onChildDragOver
+    @_domElement.removeEventListener 'dragarea:dragenter', @_onChildDragEnter
     @_domElement.removeEventListener 'dragarea:dragleave', @_onChildDragLeave
     @_domElement.removeEventListener 'dragster:leave', @_onDragLeave
     @_domElement.removeEventListener 'dragster:enter', @_onDragEnter
@@ -68,23 +71,28 @@ Droparea = React.createClass
     unless @state.shouldComponentBeActive
       @_setActiveState(true)
 
-  _onChildDragOver: ->
+  _onChildDragEnter: ->
     unless @state.shouldComponentBeActive
       @_setActiveState(false)
 
   _onDragLeave: (e) ->
     e.stopPropagation()
 
+    _leave += 1
+
     unless @props.shouldParentBeActiveWhenHovering
-      @_customEventFactory('dragarea:dragleave')
+      if _enter == _leave + 1
+        @_customEventFactory('dragarea:dragleave')
 
     @_setActiveState(false)
 
   _onDragEnter: (e) ->
     e.stopPropagation()
 
+    _enter += 1
+
     unless @props.shouldParentBeActiveWhenHovering
-      @_customEventFactory('dragarea:dragover')
+      @_customEventFactory('dragarea:dragenter')
 
     if @props.supportedFormats.length
       files = @_getFilesFromEvent(e)
@@ -114,6 +122,8 @@ Droparea = React.createClass
     @_customEventFactory('dragarea:dropped')
 
   _onDroppped: ->
+    _enter = 0
+    _leave = 0
     @_dragster.reset()
     @_setActiveState(false)
 
