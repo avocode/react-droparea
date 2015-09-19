@@ -15,7 +15,7 @@ Droparea = React.createClass
     activeClassName: React.PropTypes.string
     multiple: React.PropTypes.bool
     supportedFormats: React.PropTypes.arrayOf(React.PropTypes.string)
-    beActiveWhenHoveringDescendant: React.PropTypes.bool
+    shouldParentBeActiveWhenHovering: React.PropTypes.bool
 
   _domElement: null
 
@@ -26,10 +26,11 @@ Droparea = React.createClass
     activeClassName: 'active'
     multiple: true
     supportedFormats: []
-    beActiveWhenHoveringDescendant: true
+    shouldParentBeActiveWhenHovering: true
 
   getInitialState: ->
     dragActive: false
+    shouldComponentBeActive: !@props.shouldParentBeActiveWhenHovering
 
   componentDidMount: ->
     @_domElement = @getDOMNode()
@@ -38,27 +39,24 @@ Droparea = React.createClass
     @_domElement.addEventListener 'drop', @_onDrop
     @_domElement.addEventListener 'dragover', @_onDragOver
     @_domElement.addEventListener 'dragarea:dropped', @_onDroppped
-
-    if @props.beActiveWhenHoveringDescendant
-      @_domElement.addEventListener 'dragster:leave', @_onDragLeave
-      @_domElement.addEventListener 'dragster:enter', @_onDragEnter
-    else
-      @_domElement.addEventListener 'dragleave', @_onDragLeave
-      @_domElement.addEventListener 'dragenter', @_onDragEnter
+    @_domElement.addEventListener 'dragarea:dragover', @_onChildDragOver
+    @_domElement.addEventListener 'dragarea:dragleave', @_onChildDragLeave
+    @_domElement.addEventListener 'dragster:leave', @_onDragLeave
+    @_domElement.addEventListener 'dragster:enter', @_onDragEnter
 
   componentWillUnmount: ->
     @_domElement.removeEventListener 'drop', @_onDrop
     @_domElement.removeEventListener 'dragover', @_onDragOver
     @_domElement.removeEventListener 'dragarea:dropped', @_onDroppped
+    @_domElement.removeEventListener 'dragarea:dragover', @_onChildDragOver
+    @_domElement.removeEventListener 'dragarea:dragleave', @_onChildDragLeave
+    @_domElement.removeEventListener 'dragster:leave', @_onDragLeave
+    @_domElement.removeEventListener 'dragster:enter', @_onDragEnter
+    @_dragster.removeListeners()
+    @_dragster = null
 
-    if @props.beActiveWhenHoveringDescendant
-      @_domElement.removeEventListener 'dragster:leave', @_onDragLeave
-      @_domElement.removeEventListener 'dragster:enter', @_onDragEnter
-      @_dragster.removeListeners()
-      @_dragster = null
-    else
-      @_domElement.removeEventListener 'dragleave', @_onDragLeave
-      @_domElement.removeEventListener 'dragenter', @_onDragEnter
+  open: ->
+    @refs.fileInput.getDOMNode().click()
 
   _onDragOver: (e) ->
     e.preventDefault()
@@ -66,19 +64,27 @@ Droparea = React.createClass
 
     e.dataTransfer.dropEffect = @props.dropEffect if e.dataTransfer
 
+  _onChildDragLeave: ->
+    unless @state.shouldComponentBeActive
+      @_setActiveState(true)
+
+  _onChildDragOver: ->
+    unless @state.shouldComponentBeActive
+      @_setActiveState(false)
+
   _onDragLeave: (e) ->
     e.stopPropagation()
 
-    unless @props.beActiveWhenHoveringDescendant
-      return if @_domElement isnt e.target
+    unless @props.shouldParentBeActiveWhenHovering
+      @_customEventFactory('dragarea:dragleave')
 
     @_setActiveState(false)
 
   _onDragEnter: (e) ->
     e.stopPropagation()
 
-    unless @props.beActiveWhenHoveringDescendant
-      return if @_domElement isnt e.target
+    unless @props.shouldParentBeActiveWhenHovering
+      @_customEventFactory('dragarea:dragover')
 
     if @props.supportedFormats.length
       files = @_getFilesFromEvent(e)
@@ -90,8 +96,7 @@ Droparea = React.createClass
 
   _filterFiles: (files) ->
     regex = new RegExp("^.*\\.(#{@props.supportedFormats.join('|')})$")
-    files.filter ({name}) ->
-      regex.test(name)
+    files.filter ({name}) -> regex.test(name)
 
   _onDrop: (e) ->
     e.preventDefault()
@@ -106,13 +111,14 @@ Droparea = React.createClass
       files = @_filterFiles(files) if @props.supportedFormats.length
       @props.onDrop(files)
 
-    @dispatchDroppedEvent()
+    @_customEventFactory('dragarea:dropped')
 
   _onDroppped: ->
     @_dragster.reset()
     @_setActiveState(false)
 
-  _onClick: ->
+  _onClick: (e) ->
+    e.stopPropagation()
     @refs.fileInput.getDOMNode().click() unless @props.disableClick
 
   _setActiveState: (state) ->
@@ -129,8 +135,8 @@ Droparea = React.createClass
     else if e.target
       files = e.target.files
 
-  dispatchDroppedEvent: ->
-    @_domElement.dispatchEvent new CustomEvent 'dragarea:dropped',
+  _customEventFactory: (eventName) ->
+    @_domElement.dispatchEvent new CustomEvent eventName,
       bubbles: true
       cancelable: true
 

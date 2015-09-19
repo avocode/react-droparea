@@ -9,7 +9,7 @@
 ## Usage
 
     React = require 'react'
-    {div} = require 'reactionary'
+    {div} = React.DOM
     Dragarea = React.createFactory(require '../index')
 
     App = React.createClass
@@ -23,7 +23,6 @@
       render: ->
         div null,
           Dragarea
-            beActiveWhenHoveringDescendant: false
             onDrop: @_onRootDrop,
 
             for item in [1..10]
@@ -37,8 +36,8 @@
 
     React.render(React.createElement(App), document.getElementById('app'))
 
-This example is available in demo folder. Just clone this repo, `npm install` and `npm start`.
-Then visit `localhost:8080/demo`.
+You can fiddle with prepared demo. Clone the repo, `npm install` and `npm start`.
+Then visit `localhost:3000`.
 
 ## Options - React props
 
@@ -50,7 +49,7 @@ Then visit `localhost:8080/demo`.
     activeClassName: React.PropTypes.string
     multiple: React.PropTypes.bool
     supportedFormats: React.PropTypes.arrayOf(React.PropTypes.string)
-    beActiveWhenHoveringDescendant: React.PropTypes.bool
+    shouldParentBeActiveWhenHovering: React.PropTypes.bool
 
 ## Credits
 

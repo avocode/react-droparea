@@ -10,19 +10,28 @@ App = React.createClass
   _onRootDrop: ->
     console.log 'root'
 
+  _testClick: ->
+    @refs.dragarea.open()
+
   render: ->
-    div null,
+    div
+      className: 'wrapper'
+      onClick: @_testClick,
+
       Dragarea
-        beActiveWhenHoveringDescendant: false
+        ref: 'dragarea'
         onDrop: @_onRootDrop,
 
-        for item in [1..10]
-          Dragarea
-            className: 'droparea-item'
-            key: item
-            onDrop: @_onDrop,
-              div 'Totally placeholder 1'
-              div 'Totally placeholder 2'
-              div 'Totally placeholder 3'
+        div className: 'container',
+
+          for item in [1..10]
+            Dragarea
+              className: 'droparea-item'
+              shouldParentBeActiveWhenHovering: false
+              key: item
+              onDrop: @_onDrop,
+                div null, 'Totally placeholder 1'
+                div null, 'Totally placeholder 2'
+                div null, 'Totally placeholder 3'
 
 React.render(React.createElement(App), document.getElementById('app'))
