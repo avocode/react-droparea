@@ -4,6 +4,9 @@ Dragarea = React.createFactory(require '../')
 
 App = React.createClass
 
+  getInitialState: ->
+    areaActivated: false
+
   _onDrop: (file) ->
     document.title = 'testing'
     console.log file
@@ -12,13 +15,11 @@ App = React.createClass
     document.title = 'testing'
     console.log 'root'
 
-  _handleDragActive: (state) ->
-    console.log state
-
   componentDidMount: ->
     document.body.classList.add('loaded')
 
   render: ->
+
     div
       className: 'wrapper',
 
@@ -32,12 +33,12 @@ App = React.createClass
 
         div className: 'container',
 
-          for item in [1..10]
+          for index in [1..10]
+
             Dragarea
               className: 'droparea-item'
               shouldParentBeActiveWhenHovering: false
-              onDragActive: @_handleDragActive
-              key: item
+              key: index
               onDrop: @_onDrop,
                 div null, 'Totally placeholder 1'
                 div null, 'Totally placeholder 2'

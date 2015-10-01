@@ -69,7 +69,7 @@ Droparea = React.createClass
 
   _onChildDragLeave: ->
     unless @state.shouldComponentBeActive
-      setTimeout => @_setActiveState(true)
+      @_setActiveState(true)
 
   _onChildDragEnter: ->
     unless @state.shouldComponentBeActive
@@ -100,7 +100,7 @@ Droparea = React.createClass
     unless @props.shouldParentBeActiveWhenHovering
       @_customEventFactory('dragarea:dragenter')
 
-    setTimeout => @_setActiveState(true)
+    @_setActiveState(true)
 
   _filterFiles: (files) ->
     regex = new RegExp("^.*\\.(#{@props.supportedFormats.join('|')})$")
@@ -135,7 +135,10 @@ Droparea = React.createClass
     @setState
       dragActive: state
 
-    @props.onDragActive(state) if @props.onDragActive?
+    if @props.onDragActive?
+      if state
+        return setTimeout => @props.onDragActive(state)
+      @props.onDragActive(state)
 
   _getFilesFromEvent: (e) ->
     e = e.detail if e.detail
