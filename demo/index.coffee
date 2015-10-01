@@ -29,6 +29,7 @@ App = React.createClass
 
       Dragarea
         ref: 'dragarea'
+        draggingClassName: 'dragging'
         onDrop: @_onRootDrop,
 
         div className: 'container',
