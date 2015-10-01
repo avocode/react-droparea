@@ -6,8 +6,8 @@
   "homepage": "https://github.com/avocode/react-droparea",
   "scripts": {
     "start": "webpack-dev-server --hot --progress --colors --port 3000",
-    "test": "",
-    "prepublish": "./node_modules/.bin/coffee -o ./ index.coffee",
+    "test": "./test/setup.sh",
+    "prepublish": "coffee -o ./ index.coffee",
     "postpublish": "git clean -f -d",
     "postinstall": "git clean -f -d"
   },

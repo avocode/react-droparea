@@ -5,18 +5,26 @@ Dragarea = React.createFactory(require '../')
 App = React.createClass
 
   _onDrop: (file) ->
+    document.title = 'testing'
     console.log file
 
   _onRootDrop: ->
+    document.title = 'testing'
     console.log 'root'
 
-  _testClick: ->
-    @refs.dragarea.open()
+  _handleDragActive: (state) ->
+    console.log state
+
+  componentDidMount: ->
+    document.body.classList.add('loaded')
 
   render: ->
     div
-      className: 'wrapper'
-      onClick: @_testClick,
+      className: 'wrapper',
+
+      div
+        className: 'draggable'
+        draggable: true
 
       Dragarea
         ref: 'dragarea'
@@ -28,6 +36,7 @@ App = React.createClass
             Dragarea
               className: 'droparea-item'
               shouldParentBeActiveWhenHovering: false
+              onDragActive: @_handleDragActive
               key: item
               onDrop: @_onDrop,
                 div null, 'Totally placeholder 1'

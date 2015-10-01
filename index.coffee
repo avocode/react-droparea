@@ -69,7 +69,7 @@ Droparea = React.createClass
 
   _onChildDragLeave: ->
     unless @state.shouldComponentBeActive
-      @_setActiveState(true)
+      setTimeout => @_setActiveState(true)
 
   _onChildDragEnter: ->
     unless @state.shouldComponentBeActive
@@ -91,16 +91,16 @@ Droparea = React.createClass
 
     _enter += 1
 
-    unless @props.shouldParentBeActiveWhenHovering
-      @_customEventFactory('dragarea:dragenter')
-
     if @props.supportedFormats.length
       files = @_getFilesFromEvent(e)
       files = @_filterFiles([].slice.call(files))
 
       return unless files.length
 
-    @_setActiveState(true)
+    unless @props.shouldParentBeActiveWhenHovering
+      @_customEventFactory('dragarea:dragenter')
+
+    setTimeout => @_setActiveState(true)
 
   _filterFiles: (files) ->
     regex = new RegExp("^.*\\.(#{@props.supportedFormats.join('|')})$")
