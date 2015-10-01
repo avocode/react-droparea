@@ -128,8 +128,9 @@ Droparea = React.createClass
     @_setActiveState(false)
 
   _onClick: (e) ->
-    e.stopPropagation()
-    @refs.fileInput.getDOMNode().click() unless @props.disableClick
+    unless @props.disableClick
+      e.stopPropagation()
+      @refs.fileInput.getDOMNode().click()
 
   _setActiveState: (state) ->
     @setState
