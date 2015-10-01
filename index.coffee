@@ -12,6 +12,7 @@ Droparea = React.createClass
   propTypes:
     disableClick: React.PropTypes.bool
     onDragActive: React.PropTypes.func
+    onDrag: React.PropTypes.func
     dropEffect: React.PropTypes.string
     onDrop: React.PropTypes.func.isRequired
     className: React.PropTypes.string
@@ -73,12 +74,12 @@ Droparea = React.createClass
   _onChildDragLeave: ->
     unless @state.shouldComponentBeActive
       @setState dropActive: true
-      @_handleOnDropActive(true)
+      @_handleOnDragActive(true)
 
   _onChildDragEnter: ->
     unless @state.shouldComponentBeActive
       @setState dropActive: false
-      @_handleOnDropActive(false)
+      @_handleOnDragActive(false)
 
   _onDragLeave: (e) ->
     e.stopPropagation()
@@ -93,7 +94,8 @@ Droparea = React.createClass
       dropActive: false
       dragging: false
 
-    @_handleOnDropActive(false)
+    @_handleOnDrag(false)
+    @_handleOnDragActive(false)
 
   _onDragEnter: (e) ->
     e.stopPropagation()
@@ -109,14 +111,12 @@ Droparea = React.createClass
     unless @props.shouldParentBeActiveWhenHovering
       @_customEventFactory('dragarea:dragenter')
 
-    if @props.draggingClassName
-      @setState()
-
     @setState
       dropActive: true
       dragging: true
 
-    @_handleOnDropActive(true)
+    @_handleOnDrag(true)
+    @_handleOnDragActive(true)
 
   _filterFiles: (files) ->
     regex = new RegExp("^.*\\.(#{@props.supportedFormats.join('|')})$")
@@ -130,7 +130,8 @@ Droparea = React.createClass
       dropActive: false
       dragging: false
 
-    @_handleOnDropActive(false)
+    @_handleOnDrag(false)
+    @_handleOnDragActive(false)
 
     files = @_getFilesFromEvent(e)
 
@@ -150,18 +151,23 @@ Droparea = React.createClass
       dropActive: false
       dragging: false
 
-    @_handleOnDropActive(false)
+    @_handleOnDrag(false)
+    @_handleOnDragActive(false)
 
   _onClick: (e) ->
     unless @props.disableClick
       e.stopPropagation()
       @refs.fileInput.getDOMNode().click()
 
-  _handleOnDropActive: (state) ->
+  _handleOnDragActive: (state) ->
     if @props.onDragActive?
       if state
         return setTimeout => @props.onDragActive(state)
       @props.onDragActive(state)
+
+  _handleOnDrag: (state) ->
+    if @props.onDrag?
+      @props.onDrag(state)
 
   _getFilesFromEvent: (e) ->
     e = e.detail if e.detail

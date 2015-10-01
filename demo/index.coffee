@@ -15,6 +15,9 @@ App = React.createClass
     document.title = 'testing'
     console.log 'root'
 
+  _handleOnDrag: (state) ->
+    console.log state
+
   componentDidMount: ->
     document.body.classList.add('loaded')
 
@@ -30,6 +33,7 @@ App = React.createClass
       Dragarea
         ref: 'dragarea'
         draggingClassName: 'dragging'
+        onDrag: @_handleOnDrag
         onDrop: @_onRootDrop,
 
         div className: 'container',

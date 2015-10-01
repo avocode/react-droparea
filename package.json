@@ -7,9 +7,7 @@
   "scripts": {
     "start": "webpack-dev-server --hot --progress --colors --port 3000",
     "test": "./test/setup.sh",
-    "prepublish": "coffee -o ./ index.coffee",
-    "postpublish": "git clean -f -d",
-    "postinstall": "git clean -f -d"
+    "prepublish": "coffee -o ./ index.coffee"
   },
   "keywords": [
     "react",
