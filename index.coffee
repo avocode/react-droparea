@@ -74,7 +74,7 @@ Droparea = React.createClass
     e.dataTransfer.dropEffect = @props.dropEffect if e.dataTransfer
 
   _onChildDragLeave: ->
-    if @_didDragLeave and not @state.shouldComponentBeActive
+    if not @_didDragLeave and not @state.shouldComponentBeActive
       @setState dropActive: true
       @_handleOnDragActive(true)
 
