@@ -24,6 +24,8 @@ Droparea = React.createClass
 
   _domElement: null
 
+  _didDragLeave: false
+
   getDefaultProps: ->
     dropEffect: 'copy'
     disableClick: false
@@ -72,7 +74,7 @@ Droparea = React.createClass
     e.dataTransfer.dropEffect = @props.dropEffect if e.dataTransfer
 
   _onChildDragLeave: ->
-    unless @state.shouldComponentBeActive
+    if @_didDragLeave and not @state.shouldComponentBeActive
       @setState dropActive: true
       @_handleOnDragActive(true)
 
@@ -84,6 +86,7 @@ Droparea = React.createClass
   _onDragLeave: (e) ->
     e.stopPropagation()
 
+    @_didDragLeave = true
     _leave += 1
 
     unless @props.shouldParentBeActiveWhenHovering
@@ -100,6 +103,7 @@ Droparea = React.createClass
   _onDragEnter: (e) ->
     e.stopPropagation()
 
+    @_didDragLeave = false
     _enter += 1
 
     if @props.supportedFormats.length
