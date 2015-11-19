@@ -165,8 +165,6 @@ Droparea = React.createClass
 
   _handleOnDragActive: (state) ->
     if @props.onDragActive?
-      if state
-        return setTimeout => @props.onDragActive(state)
       @props.onDragActive(state)
 
   _handleOnDrag: (state) ->
