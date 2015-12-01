@@ -16,6 +16,7 @@ App = React.createClass
     console.log 'root'
 
   _handleActive: (state) ->
+    console.log 'ted', Date.now
     @setState(isActive: state)
 
   componentDidMount: ->
@@ -42,8 +43,8 @@ App = React.createClass
 
             Dragarea
               className: 'droparea-item'
-              #activeClassName: @state.isActive and 'active' or ''
-              #onDragActive: @_handleActive
+              activeClassName: @state.isActive and 'active' or ''
+              onDragActive: @_handleActive
               shouldParentBeActiveWhenHovering: false
               key: index
               onDrop: @_onDrop,
