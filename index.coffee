@@ -1,10 +1,9 @@
 Dragster = require 'dragster-avocode-fork'
 React = require 'react'
 ReactDOM = require 'react-dom'
+shortid = require 'shortid'
 {div, input} = React.DOM
 
-_enter = 0
-_leave = 0
 
 Droparea = React.createClass
   displayName: 'Droparea'
@@ -24,8 +23,6 @@ Droparea = React.createClass
 
   _domElement: null
 
-  _didDragLeave: false
-
   getDefaultProps: ->
     dropEffect: 'copy'
     disableClick: false
@@ -39,7 +36,7 @@ Droparea = React.createClass
   getInitialState: ->
     dragging: false
     dropActive: false
-    shouldComponentBeActive: !@props.shouldParentBeActiveWhenHovering
+    uniqueClassName: null
 
   componentDidMount: ->
     @_domElement = ReactDOM.findDOMNode(this)
@@ -52,6 +49,8 @@ Droparea = React.createClass
     @_domElement.addEventListener 'dragarea:dragleave', @_onChildDragLeave
     @_domElement.addEventListener 'dragster:leave', @_onDragLeave
     @_domElement.addEventListener 'dragster:enter', @_onDragEnter
+
+    @setState(uniqueClassName: "droparea-#{shortid.generate()}")
 
   componentWillUnmount: ->
     @_domElement.removeEventListener 'drop', @_onDrop
@@ -73,54 +72,46 @@ Droparea = React.createClass
 
     e.dataTransfer.dropEffect = @props.dropEffect if e.dataTransfer
 
-  _onChildDragLeave: ->
-    if not @_didDragLeave and not @state.shouldComponentBeActive
-      @setState dropActive: true
-      @_handleOnDragActive(true)
+  _onChildDragLeave: (e) ->
+    if @props.shouldParentBeActiveWhenHovering is false
+      if e.target isnt ReactDOM.findDOMNode(this)
+        e.stopPropagation()
+
+    @setState dropActive: true
+    @_handleOnDragActive(true)
+    @_handleOnDrag(true)
 
   _onChildDragEnter: ->
-    unless @state.shouldComponentBeActive
-      @setState dropActive: false
-      @_handleOnDragActive(false)
+    @setState dropActive: false
+    @_handleOnDragActive(false)
 
   _onDragLeave: (e) ->
     e.stopPropagation()
 
-    @_didDragLeave = true
-    _leave += 1
+    @_customEventFactory('dragarea:dragleave')
 
-    unless @props.shouldParentBeActiveWhenHovering
-      if _enter == _leave + 1
-        @_customEventFactory('dragarea:dragleave')
-
+    @_handleOnDrag(false)
+    @_handleOnDragActive(false)
     @setState
       dropActive: false
       dragging: false
 
-    @_handleOnDrag(false)
-    @_handleOnDragActive(false)
-
   _onDragEnter: (e) ->
     e.stopPropagation()
-
-    @_didDragLeave = false
-    _enter += 1
 
     if @props.supportedFormats.length
       files = @_getFilesFromEvent(e)
       files = @_filterFiles([].slice.call(files))
-
       return unless files.length
 
-    unless @props.shouldParentBeActiveWhenHovering
+    if not @props.shouldParentBeActiveWhenHovering
       @_customEventFactory('dragarea:dragenter')
-
-    @setState
-      dropActive: true
-      dragging: true
 
     @_handleOnDrag(true)
     @_handleOnDragActive(true)
+    @setState
+      dropActive: true
+      dragging: true
 
   _filterFiles: (files) ->
     regex = new RegExp("^.*\\.(#{@props.supportedFormats.join('|')})$")
@@ -147,8 +138,6 @@ Droparea = React.createClass
     @_customEventFactory('dragarea:dropped')
 
   _onDroppped: ->
-    _enter = 0
-    _leave = 0
     @_dragster.reset()
 
     @setState
@@ -179,13 +168,15 @@ Droparea = React.createClass
     else if e.target
       files = e.target.files
 
+    return files
+
   _customEventFactory: (eventName) ->
     @_domElement.dispatchEvent new CustomEvent eventName,
       bubbles: true
       cancelable: true
 
   render: ->
-    className = @props.className
+    className = "#{@props.className} #{@state.uniqueClassName}"
     className += " #{@props.activeClassName}" if @state.dropActive
     className += " #{@props.draggingClassName}" if @state.dragging
 
