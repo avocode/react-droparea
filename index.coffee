@@ -17,6 +17,7 @@ Droparea = React.createClass
     draggingClassName: React.PropTypes.string
     multiple: React.PropTypes.bool
     supportedFormats: React.PropTypes.arrayOf(React.PropTypes.string)
+    onDropStopPropagation: React.PropTypes.bool
 
   _domElement: null
 
@@ -28,6 +29,7 @@ Droparea = React.createClass
     draggingClassName: ''
     multiple: true
     supportedFormats: []
+    onDropStopPropagation: true
 
   getInitialState: ->
     dragging: false
@@ -106,7 +108,7 @@ Droparea = React.createClass
 
   _onDrop: (e) ->
     e.preventDefault()
-    e.stopPropagation()
+    e.stopPropagation() if @props.onDropStopPropagation
 
     @setState
       dropActive: false
