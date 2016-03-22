@@ -38,18 +38,20 @@ App = React.createClass
 
         div className: 'container',
 
-          for index in [1..800]
+          for index in [1..80]
 
             Dragarea
-              className: 'droparea-item'
-              activeClassName: @state.isActive and 'active' or ''
-              onDragActive: @_handleActive
-              shouldParentBeActiveWhenHovering: false
+              className: 'droparea-item' + ' index' + index
               key: index
               onDrop: @_onDrop,
                 div null, 'Totally placeholder 1'
                 div null, 'Totally placeholder 2'
                 div null, 'Totally placeholder 3'
+
+                Dragarea
+                  className: 'droparea-inner-item',
+                    div null, 'Totally placeholder 1'
+                    div null, 'Totally placeholder 2'
 
 
 ReactDOM.render(React.createElement(App), document.getElementById('app'))
