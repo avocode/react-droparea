@@ -10,6 +10,7 @@ Droparea = React.createClass
   propTypes:
     disableClick: React.PropTypes.bool
     onDrag: React.PropTypes.func
+    onDragChild: React.PropTypes.func
     dropEffect: React.PropTypes.string
     onDrop: React.PropTypes.func
     className: React.PropTypes.string
@@ -70,12 +71,12 @@ Droparea = React.createClass
     if e.target isnt ReactDOM.findDOMNode(this)
       e.stopPropagation()
       @setState(dropActive: true)
-      @_handleOnDrag(false)
+      @_handleOnDragChild(false)
 
   _onChildDragEnter: (e) ->
     if e.target isnt ReactDOM.findDOMNode(this)
       @setState(dropActive: false)
-      @_handleOnDrag(true)
+      @_handleOnDragChild(true)
 
   _onDragLeave: (e) ->
     e.stopPropagation()
@@ -141,8 +142,12 @@ Droparea = React.createClass
       @refs.fileInput.click()
 
   _handleOnDrag: (state) ->
-    if @props.onDrag?
+    if @props.onDrag
       @props.onDrag(state)
+
+  _handleOnDragChild: (state) ->
+    if @props.onDragChild
+      @props.onDragChild(state)
 
   _getFilesFromEvent: (e) ->
     e = e.detail if e.detail
