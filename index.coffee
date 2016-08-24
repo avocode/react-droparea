@@ -70,12 +70,12 @@ Droparea = React.createClass
     if e.target isnt ReactDOM.findDOMNode(this)
       e.stopPropagation()
       @setState(dropActive: true)
-      @_handleOnDrag(true)
+      @_handleOnDrag(false)
 
   _onChildDragEnter: (e) ->
     if e.target isnt ReactDOM.findDOMNode(this)
       @setState(dropActive: false)
-      @_handleOnDrag(false)
+      @_handleOnDrag(true)
 
   _onDragLeave: (e) ->
     e.stopPropagation()
