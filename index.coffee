@@ -117,6 +117,7 @@ Droparea = React.createClass
       dragging: false
 
     @_handleOnDrag(false)
+    @_handleOnDragChild(false)
 
     files = @_getFilesFromEvent(e)
 
