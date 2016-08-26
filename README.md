@@ -42,10 +42,13 @@ Then visit `localhost:3000`.
 ## Options - React props
 
     disableClick: React.PropTypes.bool
-    onDrag: React.PropTypes.func
-    onDragChild: React.PropTypes.func
+    onDragEnter: React.PropTypes.func
+    onDragEnterStopPropagation: React.PropTypes.bool
+    onDragLeave: React.PropTypes.func
+    onDragLeaveStopPropagation: React.PropTypes.bool
+    onDrop: React.PropTypes.func
+    onDropStopPropagation: React.PropTypes.bool
     dropEffect: React.PropTypes.string
-    onDrop: React.PropTypes.func.isRequired
     className: React.PropTypes.string
     activeClassName: React.PropTypes.string
     multiple: React.PropTypes.bool

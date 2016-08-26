@@ -12,12 +12,22 @@ App = React.createClass
     console.log file
 
   _onRootDrop: ->
+    @setState({ isActive: false })
     document.title = 'testing'
     console.log 'root'
 
-  _handleActive: (state) ->
-    console.log 'ted', Date.now
-    @setState(isActive: state)
+  _handleDragEnter: (e) ->
+    @setState({ isActive: true })
+
+  _handleDragLeave: (e) ->
+    console.log 'dragleave'
+    @setState({ isActive: false })
+
+  _handleChildDragEnter: (e) ->
+    @setState({ isActive: false })
+
+  _handleChildDragLeave: (e) ->
+    @setState({ isActive: true })
 
   componentDidMount: ->
     document.body.classList.add('loaded')
@@ -32,8 +42,9 @@ App = React.createClass
 
       Dragarea
         ref: 'dragarea'
-        draggingClassName: 'dragging'
-        onDrag: @_handleOnDrag
+        className: @state.isActive and 'is-active droparea' or 'droparea'
+        onDragEnter: @_handleDragEnter
+        onDragLeave: @_handleDragLeave
         onDrop: @_onRootDrop,
 
         div className: 'container',
@@ -47,11 +58,6 @@ App = React.createClass
                 div null, 'Totally placeholder 1'
                 div null, 'Totally placeholder 2'
                 div null, 'Totally placeholder 3'
-
-                Dragarea
-                  className: 'droparea-inner-item',
-                    div null, 'Totally placeholder 1'
-                    div null, 'Totally placeholder 2'
 
 
 ReactDOM.render(React.createElement(App), document.getElementById('app'))
