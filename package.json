@@ -20,7 +20,8 @@
     "url": "git://github.com/avocode/react-droparea.git"
   },
   "dependencies": {
-    "dragster-avocode-fork": "^1.0.1"
+    "dragster-avocode-fork": "^1.0.1",
+    "escape-string-regexp": "^1.0.5"
   },
   "devDependencies": {
     "chai": "^3.5.0",

@@ -2,8 +2,24 @@ Dragster = require 'dragster-avocode-fork'
 React = require 'react'
 ReactDOM = require 'react-dom'
 
+escapeRegex = require 'escape-string-regexp'
+
 {div, input} = React.DOM
 
+
+getDataTransferFiles = (event) ->
+  dataTransferItemsList = []
+  if event.dataTransfer
+    transfer = event.dataTransfer
+    if transfer.files and transfer.files.length
+      dataTransferItemsList = transfer.files
+    else if transfer.items and transfer.items.length
+      dataTransferItemsList = transfer.items
+
+  else if event.target and event.target.files
+    dataTransferItemsList = event.target.files
+
+  return Array.prototype.slice.call(dataTransferItemsList)
 
 Droparea = React.createClass
   displayName: 'Droparea'
@@ -90,8 +106,17 @@ Droparea = React.createClass
       @setState({ dropareaActive: true })
 
   _filterFiles: (files) ->
-    regex = new RegExp("^.*\\.(#{@props.supportedFormats.join('|')})$")
-    files = files.filter ({name}) -> regex.test(name)
+    escapedSupportedFormats = @props.supportedFormats.map (format) ->
+      return escapeRegex(format)
+
+    extensionRegex = new RegExp("^.*\\.(#{escapedSupportedFormats.join('|')})$")
+    mimeRegex = new RegExp("^(#{escapedSupportedFormats.join('|')})$")
+    files = files.filter (file) ->
+      if file.name
+        return extensionRegex.test(file.name)
+
+      return mimeRegex.test(file.type)
+
     return files
 
   _onDrop: (e) ->
@@ -122,7 +147,7 @@ Droparea = React.createClass
       e = e.detail
 
     if e.dataTransfer
-      files = e.dataTransfer.files
+      files = getDataTransferFiles(e)
     else if e.target
       files = e.target.files
 
