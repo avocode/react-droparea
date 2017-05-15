@@ -109,7 +109,10 @@ Droparea = React.createClass
     escapedSupportedFormats = @props.supportedFormats.map (format) ->
       return escapeRegex(format)
 
-    extensionRegex = new RegExp("^.*\\.(#{escapedSupportedFormats.join('|')})$")
+    extensionRegex = new RegExp(
+      "^.*\\.(#{escapedSupportedFormats.join('|')})$",
+      'i'
+    )
     mimeRegex = new RegExp("^(#{escapedSupportedFormats.join('|')})$")
     files = files.filter (file) ->
       if file.name
