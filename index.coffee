@@ -37,6 +37,7 @@ Droparea = React.createClass
     activeClassName: React.PropTypes.string
     multiple: React.PropTypes.bool
     supportedFormats: React.PropTypes.arrayOf(React.PropTypes.string)
+    disabled: React.PropTypes.bool
 
   _domElement: null
 
@@ -50,11 +51,14 @@ Droparea = React.createClass
     onDragEnterStopPropagation: false
     onDragLeaveStopPropagation: false
     onDropStopPropagation: false
+    disabled: false
 
   getInitialState: ->
     dropareaActive: false
 
   componentDidMount: ->
+    return if @props.disabled
+
     @_domElement = ReactDOM.findDOMNode(this)
 
     @_dragster = new Dragster(@_domElement)
@@ -65,6 +69,7 @@ Droparea = React.createClass
     @_domElement.addEventListener 'dragster:enter', @_onDragEnter
 
   componentWillUnmount: ->
+    return if @props.disabled
     @_domElement.removeEventListener 'drop', @_onDrop
     @_domElement.removeEventListener 'dragover', @_onDragOver
     @_domElement.removeEventListener 'dragarea:dropped', @_onDroppped
@@ -141,6 +146,7 @@ Droparea = React.createClass
     @setState({ dropareaActive: false })
 
   _handleClick: (e) ->
+    return if @props.disabled
     if !@props.disableClick
       e.stopPropagation()
       @refs.fileInput.click()
@@ -169,12 +175,13 @@ Droparea = React.createClass
       className: className
       onClick: @_handleClick,
 
-      input
-        style: display: 'none'
-        type: 'file'
-        ref: 'fileInput'
-        onChange: @_onDrop
-        multiple: @props.multiple
+      if not @props.disabled
+        input
+          style: display: 'none'
+          type: 'file'
+          ref: 'fileInput'
+          onChange: @_onDrop
+          multiple: @props.multiple
 
       @props.children
 
