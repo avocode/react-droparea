@@ -1,6 +1,6 @@
 {
   "name": "react-droparea",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Drag and Drop library for React",
   "main": "index.js",
   "homepage": "https://github.com/avocode/react-droparea",
